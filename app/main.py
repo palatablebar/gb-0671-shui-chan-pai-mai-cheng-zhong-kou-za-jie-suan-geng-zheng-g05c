@@ -44,9 +44,18 @@ def review(run_id:str,payload:dict=Body(...)):
     revision=payload.get('revision')
     if not isinstance(revision,int) or revision<1: raise BusinessError('BAD_REVISION','版本号须为正整数')
     return store.review(DB_PATH,run_id,revision)
+@app.post('/api/runs/{run_id}/seal')
+def seal(run_id:str):
+    """封账：固化不可变封存快照；重复封存同一批次不新增记录。"""
+    return store.seal_run(DB_PATH,run_id)
+@app.get('/api/seals')
+def seals():
+    return {'seals':store.list_seals(DB_PATH)}
 @app.get('/api/export/{run_id}')
 def export(run_id:str):
     result=store.get(DB_PATH,run_id)
-    return Response(serialize(result),media_type='application/zip',headers={'Content-Disposition':f'attachment; filename="{run_id}.zip"'})
+    carryovers=[r for r in store.list_carryovers(DB_PATH) if r['base_run_id']==run_id or r['current_run_id']==run_id]
+    payload=serialize(result,carryovers=carryovers)
+    return Response(payload,media_type='application/zip',headers={'Content-Disposition':f'attachment; filename="{run_id}.zip"'})
 for key in MODULES:
     app.include_router(import_module(f'app.modules.{key}.handler').router)

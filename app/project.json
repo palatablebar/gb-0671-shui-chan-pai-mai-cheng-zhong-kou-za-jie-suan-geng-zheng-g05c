@@ -10,7 +10,8 @@
     "扣杂竞价",
     "更正裁决",
     "应付对账",
-    "结算归档"
+    "结算归档",
+    "跨日承接"
   ],
   "rule": "双次称重先配对，再按品类扣杂；更正只能替代指定版本，禁止重复支付",
   "lane": "L1",
@@ -29,7 +30,8 @@
     "auction",
     "correction",
     "reconcile",
-    "archive"
+    "archive",
+    "carryover"
   ],
   "labels": {
     "id": "记录号",
@@ -63,6 +65,26 @@
     "repeated_header": "重复表头",
     "row_balanced": "行守恒",
     "money_balanced": "金额守恒",
-    "blocked": "阻断项"
+    "blocked": "阻断项",
+    "base_run_id": "封账批号",
+    "current_run_id": "次日批号",
+    "base_seal": "封账封存码",
+    "current_seal": "次日封存码",
+    "sealed_version": "封账版本",
+    "current_version": "更正版本",
+    "sealed_amount": "封账应付",
+    "current_amount": "次日应付",
+    "sealed_paid": "封账已付",
+    "current_paid": "次日已付",
+    "sealed_due": "封账待付",
+    "current_due": "次日待付",
+    "delta_amount": "应付差额",
+    "delta_paid": "已付差额",
+    "delta_due": "承接差额",
+    "closed": "差额闭合",
+    "published": "已发布",
+    "sealed_at": "封账时间",
+    "carried_at": "承接时间",
+    "new_tickets": "次日新票"
   }
 }

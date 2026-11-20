@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="grid">
+  <section class="panel primary-panel">
+    <div class="panel__head"><h2>跨日承接核对</h2><span id="carry-status">{{ view.metrics['状态'] }}</span></div>
+    <div class="panel__bar">
+      <label>封账批号 <input id="base-run" placeholder="如昨日 run_id" list="seal-list"></label>
+      <label>次日批号 <input id="current-run" value="{{ state.manifest.run_id }}" placeholder="今日 run_id"></label>
+      <button id="carry-preview" class="btn primary">核对承接</button>
+      <button id="carry-save" class="btn">保留待处理</button>
+      <button id="carry-publish" class="btn">发布承接</button>
+      <datalist id="seal-list"></datalist>
+    </div>
+    <div class="scroll">
+      <table class="ledger" id="carry-table">
+        <thead><tr>
+          <th>票号</th><th>封账版本</th><th>更正版本</th><th>封账应付</th><th>次日应付</th>
+          <th>应付差额</th><th>已付差额</th><th>承接差额</th><th>状态</th><th>原因码</th><th>原因</th>
+        </tr></thead>
+        <tbody id="carry-rows"><tr><td>选择封账批号与次日批号后核对。</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+  <div class="stack">
+    <div class="panel">
+      <div class="panel__head"><h2>封账金额</h2><span id="base-seal-state">未选择</span></div>
+      <div class="kpi"><small>封账应付 CNY</small><b id="base-total">—</b></div>
+      <div class="kpi"><small>次日应付 CNY</small><b id="current-total">—</b></div>
+      <div class="seal mono" id="base-seal" style="font-size:10px"></div>
+    </div>
+    <section class="panel">
+      <div class="panel__head"><h2>承接差额</h2><span id="closed-state">待核对</span></div>
+      <div class="kpi"><small>应付差额 CNY</small><b id="delta-amount">—</b></div>
+      <div class="kpi"><small>已付差额 CNY</small><b id="delta-paid">—</b></div>
+      <div class="kpi"><small>承接（待付）差额 CNY</small><b id="delta-due">—</b></div>
+      <div class="kpi"><small>承接票 / 待处理 / 次日新票</small><b id="carry-counts">—</b></div>
+    </section>
+    <section class="panel">
+      <div class="panel__head"><h2>承接记录</h2><span>重跑不新增</span></div>
+      <div class="scroll"><table class="ledger" id="record-table">
+        <thead><tr><th>封账批号</th><th>次日批号</th><th>状态</th><th>已发布</th></tr></thead>
+        <tbody id="record-rows"></tbody>
+      </table></div>
+    </section>
+  </div>
+</div>
+<section class="panel log-panel">
+  <div class="panel__head"><h2>承接日志</h2><span id="log-state">待核对</span></div>
+  <div id="log-tail" class="log-tail"><div><time>--:--:--</time><span class="lamp warn"></span> 等待选择封账批号与次日批号。</div></div>
+</section>
+{% endblock %}

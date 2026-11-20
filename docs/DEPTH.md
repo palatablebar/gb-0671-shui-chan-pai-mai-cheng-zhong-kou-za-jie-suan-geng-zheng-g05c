@@ -13,6 +13,7 @@
 | M5 更正裁决 | 查看并执行更正裁决 | `POST /api/correction` | `app/modules/correction/rules.py` | `tests/test_correction.py` |
 | M6 应付对账 | 查看并执行应付对账 | `POST /api/reconcile` | `app/modules/reconcile/rules.py` | `tests/test_reconcile.py` |
 | M7 结算归档 | 查看并执行结算归档 | `POST /api/archive` | `app/modules/archive/rules.py` | `tests/test_archive.py` |
+| M8 跨日承接 | 封账并核对承接差额、发布承接结果 | `POST /api/carryover/preview`、`POST /api/carryover`、`POST /api/carryover/publish` | `app/modules/carryover/rules.py`、`app/store.py` | `tests/test_carryover.py` |
 
 ## 陷阱登记
 
@@ -30,6 +31,10 @@
 | TRAP-06 | 全角千分位 | 静默错算或丢失证据 | 显式归一与原因裁决 | `app/modules/conversion/rules.py` | `tests/test_conversion.py::test_fullwidth_thousands` |
 | TRAP-10 | 金额半分舍入 | 静默错算或丢失证据 | 显式归一与原因裁决 | `app/modules/auction/rules.py` | `tests/test_auction.py::test_half_cent_rounding` |
 | TRAP-26 | 陈旧更正分支 | 静默错算或丢失证据 | 显式归一与原因裁决 | `app/modules/correction/rules.py` | `tests/test_correction.py::test_stale_branch` |
+| TRAP-27 | 封账后迟到更正 | 重开旧封账改写付款依据，或长期挂待处理 | 不重开封账，以票级承接差额跨日承接，差额可追溯 | `app/modules/carryover/rules.py` | `tests/test_carryover.py::test_happy_path_carries_delta_only` |
+| TRAP-28 | 同一更正重复到达 | 重复生成承接、重复计差 | 按（票,版本,替代目标）跨批审计计数，超限保留待处理 | `app/modules/carryover/rules.py` | `tests/test_carryover.py::test_duplicate_correction_kept_pending` |
+| TRAP-29 | 承接差额不闭合 | 部分承接造成账实不符 | 票级与批级双重闭合校验，不闭合全部打回待处理 | `app/modules/carryover/rules.py` | `tests/test_carryover.py::test_batch_unbalanced_forces_pending` |
+| TRAP-30 | 次日重跑新增承接/发布失败污染封账 | 重复承接记录或证据被改写 | 批号对唯一约束 + 发布事务回滚，旧封账与原证据保留 | `app/store.py` | `tests/test_carryover.py::test_rerun_does_not_add_carryover_record`、`tests/test_carryover.py::test_publish_failure_rolls_back_and_keeps_seal` |
 
 ## 对账规则
 
